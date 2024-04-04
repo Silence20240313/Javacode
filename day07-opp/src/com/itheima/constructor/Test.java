@@ -13,6 +13,6 @@ public class Test {
         System.out.println(s2.name);
         System.out.println(s2.score);
 
-        Teacher t = new Teacher();
+        Teacher t = new Teacher("l");
     }
 }

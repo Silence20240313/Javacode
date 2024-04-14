@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ATM-system/ATM-system.iml" filepath="$PROJECT_DIR$/ATM-system/ATM-system.iml" />
       <module fileurl="file://$PROJECT_DIR$/api-app/api-app.iml" filepath="$PROJECT_DIR$/api-app/api-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/array-app/array-app.iml" filepath="$PROJECT_DIR$/array-app/array-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/case-exercise/case-exercise.iml" filepath="$PROJECT_DIR$/case-exercise/case-exercise.iml" />

@@ -1,6 +1,7 @@
 package com.itheima;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ATM {
@@ -71,9 +72,44 @@ public class ATM {
         acc.setLimit(limit);
 
         //重点：我们需要为这个账户生成一个卡号（由系统自动生成，8位数字表示，不能与其他账户的卡号重复）
+        String newCardId = createCardId();
+        acc.setCardId(newCardId);
 
         //3.把这个账户对象存入到账户集合中去
         accounts.add(acc);
-        System.out.println("恭喜您：" + acc.getUserName() + "开户成功，您的卡号是：");
+        System.out.println("恭喜您：" + acc.getUserName() + "开户成功，您的卡号是：" + acc.getCardId());
+    }
+
+    /**返回一个8位数字的卡号，而且这个卡号不能与其他账户的卡号重复  */
+    private String createCardId(){
+        while (true) {
+            //1.定义一个String类型的变量，记住8位数字作为一个卡号
+            String cardId = "";
+            //2.使用循环，循环8次，每次产生一个随机数给cardId连接起来
+            Random r = new Random();
+            for (int i = 0; i < 8; i++) {
+                int data = r.nextInt(10);//0-9
+                cardId += data;
+            }
+            //3.判断cardId中记住的卡号，是否与其他账户的卡号重复了，没有重复才可以作为一个新卡号返回
+            Account acc = getAccountByCardId(cardId);
+            if (acc == null){
+               // 说明cardId没有找到账户对象，因此cardId没有与其他账户的卡号重复，可以返回他作为一个新卡号
+                return cardId;
+            }
+        }
+    }
+
+    /**根据卡号查询账户对象返回 accounts = { c1 c2 c3...} */
+    private Account getAccountByCardId(String cardId){
+        //遍历全部的账户对象
+        for (int i = 0; i < accounts.size(); i++) {
+            Account acc = accounts.get(i);
+            //判断这个账户对象acc中的卡号是否是我们要找的卡号
+            if (acc.getCardId().equals(cardId)){
+                return acc;
+            }
+        }
+        return null;//查无此账户，这个卡号不存在的
     }
 }

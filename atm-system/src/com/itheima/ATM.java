@@ -100,19 +100,139 @@ public class ATM {
                     break;
                 case 4:
                     //转账
+                    transferMoney();
                     break;
                 case 5:
                     //密码修改
-                    break;
+                     updatePassWord();
+                     return;
                 case 6:
                     //退出
                     System.out.println(loginAcc.getUserName() + "您退出系统成功");
                     return;//跳出并结束当前方法
                 case 7:
                     //注销当前账户
+                     if(deleteAccount()) {
+                         //销户成功了，回到欢迎界面
+                      return;
+                     }
                     break;
                 default:
                     System.out.println("您当前选择的操作是不存在的，请确认");
+            }
+        }
+    }
+
+    /** 账户密码修改  */
+    private void updatePassWord() {
+        System.out.println("=====账户密码修改======");
+        while (true) {
+            //1.提醒用户认证当前密码
+            System.out.println("请您输入当前账户的密码");
+            String passWord = sc.next();
+
+            //2.认证当前密码是否正确
+            if (loginAcc.getPassWord().equals(passWord)){
+                //认证通过
+                while (true) {
+                    //3.真正开始修改密码了
+                    System.out.println("请您输入新密码");
+                    String newPassWord = sc.next();
+
+                    System.out.println("请您再次输入密码");
+                    String okPassWord = sc.next();
+
+                    //4.判断两次密码是否一致
+                    if (okPassWord.equals(newPassWord)){
+                        //可以真正开始修改密码了
+                        loginAcc.setPassWord(okPassWord);
+                        System.out.println("恭喜您，您的密码修改成功");
+                        return;
+                    }else {
+                        System.out.println("您输入的两次密码不一致");
+                    }
+                }
+            }else {
+                System.out.println("您当前输入的密码不正确");
+            }
+        }
+    }
+
+    /** 销户操作  */
+    private boolean deleteAccount() {
+        System.out.println("==========进行销户操作==========");
+        //1.问问用户是否确定要销户啊
+        System.out.println("请问您确认要销户吗？Y/n");
+        String command = sc.next();
+        switch (command){
+            case "Y":
+                //确实要销户
+                //2.判断用户的账户中是否有钱 loginAcc
+                if (loginAcc .getMoney() == 0){
+                    //真的销户了
+                    accounts.remove(loginAcc);
+                    System.out.println("您好，您的账户已经成功销户");
+                    return  true;
+                }else {
+                    System.out.println("对不起，您的账户中存在金额，不允许销户");
+                    return false;
+                }
+            default:
+                System.out.println("好的，您的账户保留" );
+                return false;
+        }
+    }
+
+    /**  转账 */
+    private void transferMoney() {
+        System.out.println("=========用户转账===============");
+        //1.判断系统中是否存在其他账户
+        if (accounts.size() < 2){
+            System.out.println("当前系统中只有你一个账户，无法为其他账户转账");
+            return;
+        }
+
+        //2.判断自己的账户中是否有钱
+        if (loginAcc.getMoney() == 0){
+            System.out.println("您自己都没钱，就别转了");
+            return;
+        }
+
+        while (true) {
+            //3.真正开始转账了
+            System.out.println("请您输入对方的卡号:");
+            String cardId = sc.next();
+
+            //4.判断卡号是否正确啊
+            Account acc = getAccountByCardId(cardId);
+            if (acc == null){
+                System.out.println("您输入的对方的卡号不存在");
+            }else {
+                //对方的账户存在，继续让用户认证姓氏
+                String name = "*" + acc.getUserName().substring(1);//* + 马刘德华
+                System.out.println("请您输入|" + name + "|的姓氏:");
+                String preName = sc.next();
+                //5.判断这个姓氏是否正确
+                if (acc.getUserName().startsWith(preName)){
+                    while (true) {
+                        //认证通过，真正转账了
+                        System.out.println("请您输入转账给对方的金额：");
+                        double money = sc.nextDouble();
+                        //6.判断这个金额是否没有超过自己的余额
+                        if (loginAcc.getMoney() >= money){
+                            //转给对方了
+                            //更新自己的账户余额
+                            loginAcc.setMoney(loginAcc.getMoney() - money);
+                            //更新对方的账户余额
+                            acc.setMoney(acc.getMoney() + money);
+                           return;//跳出转账方法
+                        }else {
+                            System.out.println("您余额不足，无法给对方转这么多钱，最多可转：" + loginAcc.getMoney());
+                        }
+                    }
+                }else {
+                    System.out.println("对不起，您认证的姓氏有问题");
+                }
             }
         }
     }
